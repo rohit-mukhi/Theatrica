@@ -1,0 +1,261 @@
+/* ── PROFILE HEADER ── */
+.profile-header {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.profile-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--crimson), var(--rust));
+  color: var(--cream);
+  font-size: 2.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(187,148,87,0.3);
+  box-shadow: 0 8px 32px rgba(111,29,27,0.4);
+}
+
+.profile-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-name {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--cream);
+  line-height: 1.1;
+}
+
+.profile-tagline {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.profile-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-stat-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(187,148,87,0.2);
+}
+
+/* ── TABS ── */
+.profile-tabs {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(187,148,87,0.15);
+  margin-bottom: 0;
+}
+
+.profile-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  margin-bottom: -1px;
+}
+
+.profile-tab:hover { color: var(--cream); }
+
+.profile-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* ── SECTION ── */
+.profile-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 5rem;
+}
+
+/* ── EMPTY STATE ── */
+.profile-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--text-muted);
+  gap: 0.6rem;
+}
+
+.profile-empty-icon { font-size: 3rem; }
+
+.profile-empty p { font-size: 0.95rem; }
+
+/* ── REVIEWS GRID ── */
+.profile-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.profile-review-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(187,148,87,0.12);
+  border-radius: 12px;
+  padding: 1.2rem 1.3rem;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.profile-review-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(187,148,87,0.35);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+
+.profile-review-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.profile-review-movie {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-review-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── SETTINGS ── */
+.settings-group {
+  margin-bottom: 2.5rem;
+}
+
+.settings-group-title {
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.2rem;
+  background: var(--card-bg);
+  border: 1px solid rgba(187,148,87,0.1);
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  gap: 1rem;
+}
+
+.settings-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 0.2rem;
+}
+
+.settings-value {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.settings-edit-btn {
+  background: none;
+  border: 1px solid rgba(187,148,87,0.3);
+  color: var(--gold);
+  font-size: 0.82rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.settings-edit-btn:hover {
+  background: rgba(187,148,87,0.1);
+  border-color: var(--gold);
+}
+
+.settings-danger-btn {
+  background: none;
+  border: 1px solid rgba(224,112,112,0.3);
+  color: #e07070;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.settings-danger-btn:hover { background: rgba(224,112,112,0.1); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .profile-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .profile-reviews-grid { grid-template-columns: 1fr; }
+  .settings-row { flex-direction: column; align-items: flex-start; }
+}
