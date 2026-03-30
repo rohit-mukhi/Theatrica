@@ -172,6 +172,14 @@ export default function App() {
   function handleGetStarted() {
     if (user) {
       navigate('/home')
+      return
+    }
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    if (isMobile) {
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+      const redirectUri = encodeURIComponent(window.location.origin + '/auth/callback')
+      const scope = encodeURIComponent('openid email profile')
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=select_account`
     } else {
       ;(window as any).google?.accounts.id.prompt()
     }
