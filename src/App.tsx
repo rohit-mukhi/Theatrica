@@ -161,11 +161,6 @@ export default function App() {
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: (response: any) => handleGoogleResponseRef.current?.(response),
       })
-      // Render a hidden div as the Google button target
-      ;(window as any).google?.accounts.id.renderButton(
-        document.getElementById('google-btn-target'),
-        { theme: 'filled_black', size: 'large', width: 300 }
-      )
       ;(window as any).google?.accounts.id.prompt()
     }
 
@@ -214,15 +209,15 @@ export default function App() {
           data-aos="fade-up"
           data-aos-delay="400"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="white" fillOpacity="0.15" stroke="none"/>
+            <path d="M21.8 12.2c0-.6-.1-1.2-.2-1.8H12v3.4h5.5c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.3 3-6.9z" fill="#4285F4" stroke="none"/>
+            <path d="M12 22c2.7 0 5-0.9 6.7-2.4l-3.2-2.5c-.9.6-2 1-3.5 1-2.7 0-4.9-1.8-5.7-4.2H3v2.5C4.7 19.9 8.1 22 12 22z" fill="#34A853" stroke="none"/>
+            <path d="M6.3 13.9c-.2-.6-.3-1.2-.3-1.9s.1-1.3.3-1.9V7.6H3C2.4 8.8 2 10.4 2 12s.4 3.2 1 4.4l3.3-2.5z" fill="#FBBC05" stroke="none"/>
+            <path d="M12 5.8c1.5 0 2.9.5 3.9 1.5l2.9-2.9C17 2.8 14.7 2 12 2 8.1 2 4.7 4.1 3 7.6l3.3 2.5C7.1 7.6 9.3 5.8 12 5.8z" fill="#EA4335" stroke="none"/>
           </svg>
-          Get Started — It's Free
+          Get Started with Google
         </button>
-
-        {/* Google Sign-In button rendered here when One Tap is suppressed */}
-        {!user && <div id="google-btn-target" data-aos="fade-up" data-aos-delay="450" style={{ marginTop: '1rem' }} />}
       </section>
 
       {/* FEATURES */}
