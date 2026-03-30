@@ -34,9 +34,13 @@ export function useReviews(movieId: string) {
   useEffect(() => { fetchReviews() }, [fetchReviews])
 
   async function postReview(user: string, review: string, rating: number) {
+    const token = localStorage.getItem('theatrica_token')
     const res = await fetch(`${API}/new`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
       body: JSON.stringify({ movieId, user, review, rating }),
     })
     if (!res.ok) throw new Error('Failed to submit review')

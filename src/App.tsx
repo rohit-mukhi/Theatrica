@@ -121,7 +121,7 @@ function Carousel() {
 
 export default function App() {
   const navigate = useNavigate()
-  const { user, setUser } = useAuth()
+  const { user, setAuth } = useAuth()
   const handleGoogleResponseRef = useRef<((response: any) => void) | null>(null)
 
   async function handleGoogleResponse(response: any) {
@@ -136,8 +136,8 @@ export default function App() {
       )
       const data = await res.json()
       if (data.success) {
-        setUser(data.user)
-        navigate('/home')
+        setAuth(data.user, data.token, data.isNewUser)
+        navigate(data.isNewUser ? '/setup-username' : '/home')
       }
     } catch (e) {
       console.error('Google auth failed', e)

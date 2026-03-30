@@ -406,6 +406,39 @@
 
 .modal-success em { color: var(--gold); font-style: normal; }
 
+/* ── MODAL USER BADGE ── */
+.modal-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(187,148,87,0.08);
+  border: 1px solid rgba(187,148,87,0.2);
+  border-radius: 50px;
+  padding: 0.4rem 1rem 0.4rem 0.4rem;
+  margin-bottom: 1.2rem;
+  width: fit-content;
+}
+
+.modal-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--crimson);
+  color: var(--cream);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-user-badge span {
+  font-size: 0.88rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+
 /* ── MODAL INPUT ── */
 .modal-input {
   width: 100%;

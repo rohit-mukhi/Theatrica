@@ -49,21 +49,21 @@ function ReviewModal({
   onSubmitted: () => void
   postReview: (user: string, review: string, rating: number) => Promise<void>
 }) {
+  const { user } = useAuth()
   const [rating, setRating] = useState(0)
   const [hovered, setHovered] = useState(0)
   const [text, setText] = useState('')
-  const [user, setUser] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!rating || !text.trim() || !user.trim()) return
+    if (!rating || !text.trim()) return
     setSubmitting(true)
     setSubmitError(null)
     try {
-      await postReview(user.trim(), text.trim(), rating)
+      await postReview(user?.username ?? 'Anonymous', text.trim(), rating)
       setSubmitted(true)
       onSubmitted()
     } catch {
@@ -94,15 +94,9 @@ function ReviewModal({
             <h3 className="modal-title">Your Review</h3>
             <p className="modal-subtitle">{movieTitle}</p>
 
-            <div className="modal-field" style={{ marginBottom: '1rem' }}>
-              <input
-                className="modal-input"
-                type="text"
-                placeholder="Your name"
-                value={user}
-                onChange={e => setUser(e.target.value)}
-                maxLength={40}
-              />
+            <div className="modal-user-badge">
+              <div className="modal-user-avatar">{user?.username?.charAt(0).toUpperCase() ?? '?'}</div>
+              <span>{user?.username ?? 'Anonymous'}</span>
             </div>
 
             <div className="modal-stars">
@@ -142,7 +136,7 @@ function ReviewModal({
             <button
               type="submit"
               className="md-btn-primary modal-submit"
-              disabled={!rating || !text.trim() || !user.trim() || submitting}
+              disabled={!rating || !text.trim() || submitting}
             >
               {submitting ? 'Submitting...' : 'Submit Review'}
             </button>
