@@ -137,7 +137,7 @@ export default function App() {
       const data = await res.json()
       if (data.success) {
         setAuth(data.user, data.token, data.isNewUser)
-        navigate(data.isNewUser ? '/setup-username' : '/home')
+        navigate(data.isNewUser || !data.user.username ? '/setup-username' : '/home')
       }
     } catch (e) {
       console.error('Google auth failed', e)
