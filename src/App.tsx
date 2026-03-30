@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -87,7 +87,10 @@ function Carousel() {
             <div
               key={i}
               className="carousel-slide"
-              style={{ backgroundImage: posters[s.title] ? `url(${posters[s.title]})` : 'none' }}
+              style={{
+                backgroundImage: posters[s.title] ? `url(${posters[s.title]})` : undefined,
+                backgroundColor: posters[s.title] ? undefined : 'var(--espresso)'
+              }}
             >
               <div className="carousel-caption">
                 <span className="badge">{s.genre}</span>
@@ -119,27 +122,7 @@ function Carousel() {
 export default function App() {
   const navigate = useNavigate()
   const { user, setUser } = useAuth()
-
-  useEffect(() => {
-    AOS.init({ duration: 600, once: true, easing: 'ease-out-cubic' })
-
-    // Inject Google One Tap script
-    const script = document.createElement('script')
-    script.src = 'https://accounts.google.com/gsi/client'
-    script.async = true
-    script.defer = true
-    document.body.appendChild(script)
-
-    script.onload = () => {
-      ;(window as any).google?.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        callback: handleGoogleResponse,
-      })
-      ;(window as any).google?.accounts.id.prompt()
-    }
-
-    return () => { document.body.removeChild(script) }
-  }, [])
+  const handleGoogleResponseRef = useRef<((response: any) => void) | null>(null)
 
   async function handleGoogleResponse(response: any) {
     try {
@@ -160,6 +143,31 @@ export default function App() {
       console.error('Google auth failed', e)
     }
   }
+
+  // Keep ref in sync so the onload closure always calls the latest version
+  handleGoogleResponseRef.current = handleGoogleResponse
+
+  useEffect(() => {
+    AOS.init({ duration: 600, once: true, easing: 'ease-out-cubic' })
+
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    document.body.appendChild(script)
+
+    script.onload = () => {
+      ;(window as any).google?.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: (response: any) => handleGoogleResponseRef.current?.(response),
+      })
+      ;(window as any).google?.accounts.id.prompt()
+    }
+
+    return () => {
+      if (document.body.contains(script)) document.body.removeChild(script)
+    }
+  }, [])
 
   function handleGetStarted() {
     if (user) {
