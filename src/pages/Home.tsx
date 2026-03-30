@@ -71,7 +71,7 @@ function MovieCard({ movie, index }: { movie: { Title: string; Poster: string; P
 }
 
 export default function Home() {
-  const { user, signOut } = useAuth()
+  const { signOut } = useAuth()
   const { movies, loading, error } = useMovies()
   const { results, loading: searching, error: searchError, query, search, clear } = useSearch()
   const [menuOpen, setMenuOpen] = useState(false)

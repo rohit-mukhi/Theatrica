@@ -6,8 +6,7 @@ import './App.css'
 import Footer from './components/Footer'
 import { useAuth } from './context/AuthContext'
 
-// Replace with real auth state once Google One Tap is integrated
-const isLoggedIn = false
+
 const SLIDES = [
   { genre: 'Top Pick',   title: 'Oppenheimer',           desc: 'A gripping biographical thriller about the father of the atomic bomb.' },
   { genre: 'Trending',   title: 'Dune: Part Two',         desc: 'Paul Atreides unites with the Fremen to wage war against the Harkonnens.' },

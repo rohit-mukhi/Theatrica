@@ -6,9 +6,6 @@ import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
 import '../styles/Profile.css'
 
-// Placeholder — replace with real auth user once Google One Tap is integrated
-const CURRENT_USER = 'Guest'
-
 interface Review {
   _id: string
   movieId: string
