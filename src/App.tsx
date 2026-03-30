@@ -161,6 +161,11 @@ export default function App() {
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: (response: any) => handleGoogleResponseRef.current?.(response),
       })
+      // Render a hidden div as the Google button target
+      ;(window as any).google?.accounts.id.renderButton(
+        document.getElementById('google-btn-target'),
+        { theme: 'filled_black', size: 'large', width: 300 }
+      )
       ;(window as any).google?.accounts.id.prompt()
     }
 
@@ -215,6 +220,9 @@ export default function App() {
           </svg>
           Get Started — It's Free
         </button>
+
+        {/* Google Sign-In button rendered here when One Tap is suppressed */}
+        {!user && <div id="google-btn-target" data-aos="fade-up" data-aos-delay="450" style={{ marginTop: '1rem' }} />}
       </section>
 
       {/* FEATURES */}
