@@ -17,7 +17,7 @@ interface Request {
 
 export default function FriendRequests() {
   const navigate = useNavigate()
-  const { user, signOut } = useAuth()
+  const { signOut } = useAuth()
   const [requests, setRequests] = useState<Request[]>([])
   const [loading, setLoading] = useState(true)
   const [acting, setActing] = useState<string | null>(null)
