@@ -166,7 +166,6 @@ export default function Home() {
         <ul className="navbar-links">
           <li><a href="#">Browse</a></li>
           <li><a href="/matches">Matches</a></li>
-          <li><a href="/watchlist">Watchlist</a></li>
         </ul>
         <div className="hamburger-wrapper" ref={dropdownRef}>
           <button className="hamburger-btn" onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
@@ -181,6 +180,12 @@ export default function Home() {
                   <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg>
                 My Profile
+              </button>
+              <button onClick={() => { setMenuOpen(false); navigate('/watchlist') }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
+                Watchlist
               </button>
               <button onClick={() => { setMenuOpen(false); signOut(); navigate('/') }} className="signout">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
