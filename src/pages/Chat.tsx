@@ -42,10 +42,16 @@ export default function Chat() {
     if (!input.trim() || !otherUser) return
     sendMessage(otherUser, input.trim())
     setInput('')
+    // Reset textarea height after send
+    const ta = document.querySelector('.chat-input') as HTMLTextAreaElement
+    if (ta) ta.style.height = 'auto'
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setInput(e.target.value)
+    // Auto-grow
+    e.target.style.height = 'auto'
+    e.target.style.height = `${e.target.scrollHeight}px`
     if (!otherUser) return
     sendTyping(otherUser)
     if (typingTimeout.current) clearTimeout(typingTimeout.current)
@@ -131,14 +137,20 @@ export default function Chat() {
 
       {/* INPUT */}
       <form className="chat-input-bar" onSubmit={handleSend}>
-        <input
+        <textarea
           className="chat-input"
-          type="text"
           placeholder="Type a message..."
           value={input}
           onChange={handleInputChange}
           maxLength={500}
+          rows={1}
           autoFocus
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              if (input.trim() && connected) handleSend(e as any)
+            }
+          }}
         />
         <button type="submit" className="chat-send" disabled={!input.trim() || !connected}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
