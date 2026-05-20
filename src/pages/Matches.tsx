@@ -20,10 +20,17 @@ interface Match {
 }
 
 function MatchCard({ match, index }: { match: Match; index: number }) {
+  const navigate = useNavigate()
   const scoreColor = match.score >= 75 ? 'var(--gold)' : match.score >= 50 ? '#a0c4a0' : 'var(--text-muted)'
 
   return (
-    <div className="match-card" data-aos="fade-up" data-aos-delay={`${(index % 3) * 80}`}>
+    <div
+      className="match-card"
+      data-aos="fade-up"
+      data-aos-delay={`${(index % 3) * 80}`}
+      onClick={() => navigate(`/user/${match.username}`)}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="match-poster-wrap">
         {match.topSharedMoviePoster
           ? <img src={match.topSharedMoviePoster} alt={match.topSharedMovieTitle} className="match-poster" />

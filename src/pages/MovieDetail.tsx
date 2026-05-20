@@ -24,12 +24,19 @@ function StarRating({ rating }: { rating: number }) {
 
 // ── REVIEW CARD ──
 function ReviewCard({ review, index }: { review: Review; index: number }) {
+  const navigate = useNavigate()
   return (
-    <div className="review-card" data-aos="fade-up" data-aos-delay={`${(index % 3) * 100}`}>
+    <div
+      className="review-card review-card-clickable"
+      data-aos="fade-up"
+      data-aos-delay={`${(index % 3) * 100}`}
+      onClick={() => navigate(`/user/${review.user}`)}
+    >
       <div className="review-header">
         <div className="review-avatar">{review.user.charAt(0).toUpperCase()}</div>
         <div>
           <p className="review-user">{review.user}</p>
+          <p className="review-user-hint">View profile →</p>
         </div>
         <StarRating rating={Number(review.rating)} />
       </div>

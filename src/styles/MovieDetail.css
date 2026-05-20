@@ -498,3 +498,27 @@
   border-color: var(--gold);
   color: var(--gold);
 }
+
+/* ── CLICKABLE REVIEW CARD ── */
+.review-card-clickable {
+  cursor: pointer;
+}
+
+.review-card-clickable:hover {
+  border-color: rgba(187,148,87,0.4);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  transform: translateY(-3px);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.review-user-hint {
+  font-size: 0.72rem;
+  color: var(--gold);
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-top: 0.1rem;
+}
+
+.review-card-clickable:hover .review-user-hint {
+  opacity: 1;
+}
