@@ -1,11 +1,13 @@
 /* ── PROFILE HEADER ── */
 .profile-header {
   max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   padding: 4rem 2rem 2rem;
   display: flex;
   align-items: center;
   gap: 2.5rem;
+  box-sizing: border-box;
 }
 
 .profile-avatar-wrap {
@@ -113,8 +115,10 @@
 /* ── SECTION ── */
 .profile-section {
   max-width: 900px;
+  width: 100%;
   margin: 0 auto;
   padding: 2.5rem 2rem 5rem;
+  box-sizing: border-box;
 }
 
 /* ── EMPTY STATE ── */
@@ -137,6 +141,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 1.2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-review-card {
@@ -149,6 +155,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .profile-review-card:hover {
