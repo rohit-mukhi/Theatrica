@@ -9,28 +9,21 @@ export default function Footer() {
         <div className="footer-col">
           <h4>Explore</h4>
           <ul>
-            <li><a href="#">Top Rated</a></li>
-            <li><a href="#">New Releases</a></li>
-            <li><a href="#">By Genre</a></li>
-            <li><a href="#">Collections</a></li>
+            <li><a href="/home">Browse Movies</a></li>
+            <li><a href="/watchlist">My Watchlist</a></li>
           </ul>
         </div>
         <div className="footer-col">
           <h4>Account</h4>
           <ul>
-            <li><a href="#">Sign Up</a></li>
-            <li><a href="#">Sign In</a></li>
-            <li><a href="#">Watchlist</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="/profile">My Profile</a></li>
+            <li><a href="/profile">Settings</a></li>
           </ul>
         </div>
         <div className="footer-col">
           <h4>Company</h4>
           <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">Terms</a></li>
+            <li><a href="/">About</a></li>
           </ul>
         </div>
       </div>
