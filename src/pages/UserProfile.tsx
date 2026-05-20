@@ -4,7 +4,9 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
+import { useConnection } from '../hooks/useConnection'
 import '../styles/Profile.css'
+import '../styles/UserProfile.css'
 
 const API = `${import.meta.env.VITE_API_BASE_URL}/api/v1/reviews`
 const OMDB_KEY = import.meta.env.VITE_OMDB_API_KEY
@@ -45,6 +47,7 @@ export default function UserProfile() {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const isOwnProfile = user?.username === username
+  const { status, direction, acting, sendRequest, acceptRequest, rejectRequest, removeFriend, blockUser, unblockUser } = useConnection(user?.username ?? null, username ?? null)
 
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + Number(r.rating), 0) / reviews.length).toFixed(1)
@@ -135,6 +138,12 @@ export default function UserProfile() {
                 </svg>
                 My Profile
               </button>
+              <button onClick={() => { setMenuOpen(false); navigate('/requests') }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
+                </svg>
+                Friend Requests
+              </button>
               <button onClick={() => { setMenuOpen(false); navigate('/matches') }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -190,6 +199,45 @@ export default function UserProfile() {
                 <span className="stat-label">Avg Rating</span>
               </div>
             </div>
+
+            {/* CONNECTION ACTIONS */}
+            {user && (
+              <div className="up-actions" data-aos="fade-up" data-aos-delay="250">
+                {status === 'none' && (
+                  <button className="up-btn up-btn-primary" onClick={sendRequest} disabled={acting}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                    {acting ? 'Sending...' : 'Connect'}
+                  </button>
+                )}
+                {status === 'pending' && direction === 'sent' && (
+                  <button className="up-btn up-btn-muted" disabled>Request Sent</button>
+                )}
+                {status === 'pending' && direction === 'received' && (
+                  <>
+                    <button className="up-btn up-btn-primary" onClick={acceptRequest} disabled={acting}>Accept</button>
+                    <button className="up-btn up-btn-ghost" onClick={rejectRequest} disabled={acting}>Decline</button>
+                  </>
+                )}
+                {status === 'accepted' && (
+                  <>
+                    <button className="up-btn up-btn-primary" onClick={() => navigate(`/chat/${username}`)}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                      Message
+                    </button>
+                    <button className="up-btn up-btn-ghost" onClick={removeFriend} disabled={acting}>Unfriend</button>
+                  </>
+                )}
+                {status === 'blocked' && (
+                  <button className="up-btn up-btn-ghost" onClick={unblockUser} disabled={acting}>Unblock</button>
+                )}
+                {status !== 'blocked' && (
+                  <button className="up-btn up-btn-danger" onClick={blockUser} disabled={acting}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    Block
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
