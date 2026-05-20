@@ -4,6 +4,7 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { useMovieDetail } from '../hooks/useMovieDetail'
 import { useReviews, type Review } from '../hooks/useReviews'
+import { useWatchlist } from '../hooks/useWatchlist'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
 import '../styles/MovieDetail.css'
@@ -149,11 +150,12 @@ function ReviewModal({
 
 // ── MAIN PAGE ──
 export default function MovieDetail() {
-  const { signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const { imdbID } = useParams<{ imdbID: string }>()
   const navigate = useNavigate()
   const { movie, loading, error } = useMovieDetail(imdbID ?? '')
   const { reviews, loading: reviewsLoading, error: reviewsError, refetch, postReview } = useReviews(imdbID ?? '')
+  const { isInWatchlist, toggle: toggleWatchlist } = useWatchlist(user?.username ?? null)
 
   const [showAll, setShowAll] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -262,6 +264,17 @@ export default function MovieDetail() {
                     </svg>
                     Add Review
                   </button>
+                  {user && (
+                    <button
+                      className={`md-btn-secondary${isInWatchlist(imdbID ?? '') ? ' watchlist-active' : ''}`}
+                      onClick={() => toggleWatchlist(imdbID ?? '')}
+                    >
+                      <svg viewBox="0 0 24 24" fill={isInWatchlist(imdbID ?? '') ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                      </svg>
+                      {isInWatchlist(imdbID ?? '') ? 'Saved' : 'Watchlist'}
+                    </button>
+                  )}
                 </div>
               </div>
             </section>

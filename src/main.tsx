@@ -8,6 +8,7 @@ import MovieDetail from './pages/MovieDetail.tsx'
 import Profile from './pages/Profile.tsx'
 import UsernameSetup from './pages/UsernameSetup.tsx'
 import AuthCallback from './pages/AuthCallback.tsx'
+import Watchlist from './pages/Watchlist.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/profile" element={<Profile />} />
           <Route path="/setup-username" element={<UsernameSetup />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/watchlist" element={<Watchlist />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

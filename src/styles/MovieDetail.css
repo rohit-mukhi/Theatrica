@@ -491,3 +491,10 @@
   .reviews-grid { grid-template-columns: 1fr; }
   .md-reviews-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
+
+/* ── WATCHLIST ACTIVE STATE ── */
+.md-btn-secondary.watchlist-active {
+  background: rgba(187,148,87,0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}

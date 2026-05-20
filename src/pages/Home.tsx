@@ -4,6 +4,7 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { useMovies } from '../hooks/useMovies'
 import { useSearch } from '../hooks/useSearch'
+import { useWatchlist } from '../hooks/useWatchlist'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
 import '../styles/Home.css'
@@ -49,17 +50,45 @@ function InfiniteCarousel({ posters, paused }: { posters: { src: string; title: 
   )
 }
 
-function MovieCard({ movie, index }: { movie: { Title: string; Poster: string; Plot: string; Year: string; imdbID: string }, index: number }) {
+function BookmarkBtn({ inList, toggling, onClick }: { inList: boolean; toggling: boolean; onClick: (e: React.MouseEvent) => void }) {
+  return (
+    <button
+      className={`bookmark-btn${inList ? ' active' : ''}`}
+      onClick={onClick}
+      disabled={toggling}
+      aria-label={inList ? 'Remove from watchlist' : 'Add to watchlist'}
+    >
+      <svg viewBox="0 0 24 24" fill={inList ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+      </svg>
+    </button>
+  )
+}
+
+function MovieCard({ movie, index, isInWatchlist, toggleWatchlist, loggedIn }: {
+  movie: { Title: string; Poster: string; Plot: string; Year: string; imdbID: string }
+  index: number
+  isInWatchlist: (id: string) => boolean
+  toggleWatchlist: (id: string) => void
+  loggedIn: boolean
+}) {
   const poster = movie.Poster !== 'N/A' ? movie.Poster : null
   const navigate = useNavigate()
 
   return (
     <div className="movie-card" data-aos="fade-up" data-aos-delay={`${(index % 4) * 80}`} onClick={() => navigate(`/movie/${movie.imdbID}`)} style={{ cursor: 'pointer' }}>
-      <div className="movie-card-poster">
+      <div className="movie-card-poster" style={{ position: 'relative' }}>
         {poster
           ? <img src={poster} alt={movie.Title} />
           : <div className="movie-card-no-poster">No Poster</div>
         }
+        {loggedIn && (
+          <BookmarkBtn
+            inList={isInWatchlist(movie.imdbID)}
+            toggling={false}
+            onClick={e => { e.stopPropagation(); toggleWatchlist(movie.imdbID) }}
+          />
+        )}
       </div>
       <div className="movie-card-info">
         <h3>{movie.Title}</h3>
@@ -71,8 +100,9 @@ function MovieCard({ movie, index }: { movie: { Title: string; Poster: string; P
 }
 
 export default function Home() {
-  const { signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const { movies, loading, error } = useMovies()
+  const { isInWatchlist, toggle: toggleWatchlist } = useWatchlist(user?.username ?? null)
   const { results, loading: searching, error: searchError, query, search, clear } = useSearch()
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -212,7 +242,7 @@ export default function Home() {
             )}
             {!searching && results.length > 0 && (
               <div className="movie-grid">
-                {results.map((m, i) => <MovieCard key={m.imdbID} movie={m} index={i} />)}
+                {results.map((m, i) => <MovieCard key={m.imdbID} movie={m} index={i} isInWatchlist={isInWatchlist} toggleWatchlist={toggleWatchlist} loggedIn={!!user} />)}
               </div>
             )}
           </section>
@@ -239,7 +269,7 @@ export default function Home() {
               {error && <div className="home-status home-error">{error}</div>}
               {!loading && !error && (
                 <div className="movie-grid">
-                  {movies.map((m, i) => <MovieCard key={m.imdbID} movie={m} index={i} />)}
+                  {movies.map((m, i) => <MovieCard key={m.imdbID} movie={m} index={i} isInWatchlist={isInWatchlist} toggleWatchlist={toggleWatchlist} loggedIn={!!user} />)}
                 </div>
               )}
             </section>
