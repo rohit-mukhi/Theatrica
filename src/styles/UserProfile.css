@@ -63,7 +63,7 @@
 
 @media (max-width: 480px) {
   .up-actions { gap: 0.5rem; }
-  .up-btn { padding: 0.5rem 1rem; font-size: 0.82rem; }
+  .up-btn { padding: 0.5rem 1rem; font-size: 0.82rem; white-space: normal; }
 }
 
 /* ── FRIEND REQUEST CARD ── */

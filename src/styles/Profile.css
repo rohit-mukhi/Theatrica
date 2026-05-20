@@ -272,6 +272,17 @@
   display: block;
 }
 
+/* Prevent any child from causing horizontal scroll */
+.home {
+  overflow-x: hidden;
+}
+
+/* profile-meta must shrink so it never pushes past viewport */
+.profile-meta {
+  min-width: 0;
+  flex: 1;
+}
+
 /* Tablet — tighten up header padding and avatar size */
 @media (max-width: 768px) {
   .profile-header {
