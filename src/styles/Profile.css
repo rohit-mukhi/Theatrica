@@ -259,3 +259,87 @@
   .profile-reviews-grid { grid-template-columns: 1fr; }
   .settings-row { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── USER PROFILE (public read-only) ── */
+.userprofile-back {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 2rem 0;
+}
+
+.userprofile-reviews-label {
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+/* Tablet — tighten up header padding and avatar size */
+@media (max-width: 768px) {
+  .profile-header {
+    padding: 3rem 1.5rem 1.5rem;
+    gap: 1.8rem;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .profile-section {
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .userprofile-back {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .profile-reviews-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+/* Mobile — stack header vertically, full-width cards */
+@media (max-width: 480px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem 1.2rem 1.2rem;
+    gap: 1.2rem;
+  }
+
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.8rem;
+  }
+
+  .profile-name {
+    font-size: 1.4rem;
+  }
+
+  .profile-stats {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .profile-section {
+    padding: 1.5rem 1.2rem 3rem;
+  }
+
+  .userprofile-back {
+    padding: 1.2rem 1.2rem 0;
+  }
+
+  .profile-reviews-grid {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .profile-review-card {
+    padding: 1rem 1.1rem;
+  }
+}

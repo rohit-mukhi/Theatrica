@@ -162,7 +162,7 @@ export default function UserProfile() {
 
       <main className="home-main">
         {/* BACK BUTTON */}
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '2rem 2rem 0' }}>
+        <div className="userprofile-back">
           <button className="search-back-btn" onClick={() => navigate(-1)}>← Back</button>
         </div>
 
@@ -195,7 +195,7 @@ export default function UserProfile() {
 
         {/* REVIEWS */}
         <section className="profile-section" data-aos="fade-up">
-          <p className="section-label" style={{ marginBottom: '1.5rem' }}>Their Reviews</p>
+          <p className="section-label userprofile-reviews-label">Their Reviews</p>
 
           {loading && <div className="home-status">Loading...</div>}
 
