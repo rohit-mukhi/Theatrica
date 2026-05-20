@@ -135,8 +135,8 @@ export default function Home() {
         <a href="/" className="navbar-logo"><span>Theatrica</span></a>
         <ul className="navbar-links">
           <li><a href="#">Browse</a></li>
-          <li><a href="#">Matches</a></li>
-          <li><a href="#">Watchlist</a></li>
+          <li><a href="/matches">Matches</a></li>
+          <li><a href="/watchlist">Watchlist</a></li>
         </ul>
         <div className="hamburger-wrapper" ref={dropdownRef}>
           <button className="hamburger-btn" onClick={() => setMenuOpen(o => !o)} aria-label="Menu">

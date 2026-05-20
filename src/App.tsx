@@ -192,7 +192,7 @@ export default function App() {
         <a href="#" className="navbar-logo"><span>Theatrica</span></a>
         <ul className="navbar-links">
           <li><a href="#features">Features</a></li>
-          <li><a href="#">Browse</a></li>
+          <li><a href="/home">Browse</a></li>
           <li><a href="#">Top Rated</a></li>
           <li><a href="#">About</a></li>
         </ul>

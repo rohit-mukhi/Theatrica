@@ -174,8 +174,8 @@ export default function MovieDetail() {
         <a href="/home" className="navbar-logo"><span>Theatrica</span></a>
         <ul className="navbar-links">
           <li><a href="/home">Browse</a></li>
-          <li><a href="#">Matches</a></li>
-          <li><a href="#">Watchlist</a></li>
+          <li><a href="/matches">Matches</a></li>
+          <li><a href="/watchlist">Watchlist</a></li>
         </ul>
         <div className="hamburger-wrapper">
           <button className="hamburger-btn" onClick={() => setMenuOpen(o => !o)} aria-label="Menu">

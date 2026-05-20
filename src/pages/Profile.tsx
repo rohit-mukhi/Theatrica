@@ -6,9 +6,13 @@ import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
 import '../styles/Profile.css'
 
+const API = `${import.meta.env.VITE_API_BASE_URL}/api/v1/reviews`
+const OMDB_KEY = import.meta.env.VITE_OMDB_API_KEY
+
 interface Review {
   _id: string
   movieId: string
+  movieTitle?: string
   user: string
   review: string
   rating: number
@@ -42,8 +46,8 @@ function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (v:
       <a href="/home" className="navbar-logo"><span>Theatrica</span></a>
       <ul className="navbar-links">
         <li><a href="/home">Browse</a></li>
-        <li><a href="#">Matches</a></li>
-        <li><a href="#">Watchlist</a></li>
+        <li><a href="/matches">Matches</a></li>
+        <li><a href="/watchlist">Watchlist</a></li>
       </ul>
       <div className="hamburger-wrapper" ref={dropdownRef}>
         <button className="hamburger-btn" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
@@ -74,7 +78,7 @@ function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (v:
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { user, signOut } = useAuth()
+  const { user, token, signOut, updateUsername } = useAuth()
   const displayName = user?.username ?? 'Guest'
   const profilePic = typeof user?.profilePic === 'string' ? user.profilePic : null
   const [menuOpen, setMenuOpen] = useState(false)
@@ -82,6 +86,10 @@ export default function Profile() {
   const [loading, setLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
   const [activeTab, setActiveTab] = useState<'reviews' | 'settings'>('reviews')
+  const [editingUsername, setEditingUsername] = useState(false)
+  const [newUsername, setNewUsername] = useState('')
+  const [usernameError, setUsernameError] = useState<string | null>(null)
+  const [usernameSubmitting, setUsernameSubmitting] = useState(false)
 
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + Number(r.rating), 0) / reviews.length).toFixed(1)
@@ -94,15 +102,27 @@ export default function Profile() {
     window.scrollTo(0, 0)
   }, [])
 
-  // Fetch all reviews by this user across all movies
   useEffect(() => {
+    if (!user?.username) return
     async function fetchUserReviews() {
       setLoading(true)
       try {
-        // Backend doesn't have a user-specific endpoint yet,
-        // so we fetch recent reviews and filter by username client-side.
-        // TODO: add GET /api/v1/reviews/user/:username to backend
-        setReviews([])
+        const res = await fetch(`${API}/user/${encodeURIComponent(user!.username!)}`)
+        const data = await res.json()
+        const raw: Review[] = Array.isArray(data) ? data : []
+        // Enrich with movie titles from OMDB
+        const enriched = await Promise.all(
+          raw.map(async r => {
+            try {
+              const omdb = await fetch(`https://www.omdbapi.com/?i=${r.movieId}&apikey=${OMDB_KEY}&plot=none`)
+              const movie = await omdb.json()
+              return { ...r, movieTitle: movie.Response === 'True' ? movie.Title : r.movieId }
+            } catch {
+              return { ...r, movieTitle: r.movieId }
+            }
+          })
+        )
+        setReviews(enriched)
       } catch {
         setReviews([])
       } finally {
@@ -110,7 +130,34 @@ export default function Profile() {
       }
     }
     fetchUserReviews()
-  }, [])
+  }, [user?.username])
+
+  async function handleUsernameEdit(e: React.FormEvent) {
+    e.preventDefault()
+    const trimmed = newUsername.trim()
+    if (trimmed.length < 3) { setUsernameError('At least 3 characters required.'); return }
+    if (!/^[a-zA-Z0-9_]+$/.test(trimmed)) { setUsernameError('Letters, numbers and underscores only.'); return }
+    setUsernameSubmitting(true)
+    setUsernameError(null)
+    try {
+      const res = await fetch(`${API}/setUsername`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ username: trimmed }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        updateUsername(data.username, data.token)
+        setEditingUsername(false)
+      } else {
+        setUsernameError(data.message ?? 'Something went wrong.')
+      }
+    } catch {
+      setUsernameError('Failed to update username.')
+    } finally {
+      setUsernameSubmitting(false)
+    }
+  }
 
   return (
     <div className="home">
@@ -192,7 +239,7 @@ export default function Profile() {
                       onClick={() => navigate(`/movie/${r.movieId}`)}
                     >
                       <div className="profile-review-top">
-                        <span className="profile-review-movie">{r.movieId}</span>
+                        <span className="profile-review-movie">{r.movieTitle ?? r.movieId}</span>
                         <StarRating rating={r.rating} />
                       </div>
                       <p className="profile-review-text">{r.review}</p>
@@ -215,11 +262,34 @@ export default function Profile() {
             <div className="settings-group">
               <h3 className="settings-group-title">Account</h3>
               <div className="settings-row">
-                <div>
+                <div style={{ flex: 1 }}>
                   <p className="settings-label">Display Name</p>
-                  <p className="settings-value">{displayName}</p>
+                  {editingUsername ? (
+                    <form onSubmit={handleUsernameEdit} style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.4rem' }}>
+                      <input
+                        className="modal-input"
+                        style={{ maxWidth: 260 }}
+                        value={newUsername}
+                        onChange={e => { setNewUsername(e.target.value); setUsernameError(null) }}
+                        placeholder="new_username"
+                        maxLength={30}
+                        autoFocus
+                      />
+                      {usernameError && <p className="modal-error" style={{ margin: 0 }}>{usernameError}</p>}
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem' }}>
+                        <button type="submit" className="settings-edit-btn" disabled={usernameSubmitting}>
+                          {usernameSubmitting ? 'Saving...' : 'Save'}
+                        </button>
+                        <button type="button" className="settings-edit-btn" onClick={() => { setEditingUsername(false); setUsernameError(null) }}>Cancel</button>
+                      </div>
+                    </form>
+                  ) : (
+                    <p className="settings-value">{displayName}</p>
+                  )}
                 </div>
-                <button className="settings-edit-btn">Edit</button>
+                {!editingUsername && (
+                  <button className="settings-edit-btn" onClick={() => { setNewUsername(displayName); setEditingUsername(true) }}>Edit</button>
+                )}
               </div>
               <div className="settings-row">
                 <div>
