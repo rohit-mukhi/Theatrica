@@ -114,6 +114,8 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState<'reviews' | 'friends' | 'settings'>('reviews')
   const [friends, setFriends] = useState<{ username: string; profilePic: string | null }[]>([])
   const [friendsLoading, setFriendsLoading] = useState(false)
+  const [selectedFriend, setSelectedFriend] = useState<string | null>(null)
+  const [removingFriend, setRemovingFriend] = useState(false)
   const [editingUsername, setEditingUsername] = useState(false)
   const [newUsername, setNewUsername] = useState('')
   const [usernameError, setUsernameError] = useState<string | null>(null)
@@ -171,6 +173,22 @@ export default function Profile() {
       .catch(() => setFriends([]))
       .finally(() => setFriendsLoading(false))
   }, [activeTab, token])
+
+  async function handleRemoveFriend() {
+    if (!selectedFriend || !token) return
+    setRemovingFriend(true)
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/connections/friend/${encodeURIComponent(selectedFriend)}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      setFriends(prev => prev.filter(f => f.username !== selectedFriend))
+    } catch {}
+    finally {
+      setRemovingFriend(false)
+      setSelectedFriend(null)
+    }
+  }
 
   async function handleUsernameEdit(e: React.FormEvent) {
     e.preventDefault()
@@ -320,26 +338,53 @@ export default function Profile() {
                 {friends.map((f, i) => (
                   <div
                     key={f.username}
-                    className="friend-item"
-                    onClick={() => navigate(`/chat/${f.username}`)}
+                    className={`friend-item${selectedFriend === f.username ? ' selected' : ''}`}
                     data-aos="fade-up"
                     data-aos-delay={`${i * 40}`}
                   >
-                    <div className="friend-avatar">
-                      {f.profilePic
-                        ? <img src={f.profilePic} alt={f.username} />
-                        : f.username.charAt(0).toUpperCase()
-                      }
+                    <div className="friend-item-main" onClick={() => navigate(`/chat/${f.username}`)}>
+                      <div className="friend-avatar">
+                        {f.profilePic
+                          ? <img src={f.profilePic} alt={f.username} />
+                          : f.username.charAt(0).toUpperCase()
+                        }
+                      </div>
+                      <span className="friend-username">@{f.username}</span>
+                      <svg className="friend-chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
                     </div>
-                    <span className="friend-username">@{f.username}</span>
-                    <svg className="friend-chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
+                    <button
+                      className="friend-remove-btn"
+                      onClick={e => { e.stopPropagation(); setSelectedFriend(f.username) }}
+                      aria-label="Remove friend"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                        <line x1="17" y1="11" x2="23" y2="11"/>
+                      </svg>
+                    </button>
                   </div>
                 ))}
               </div>
             )}
           </section>
+        )}
+
+        {/* REMOVE FRIEND CONFIRM MODAL */}
+        {selectedFriend && (
+          <div className="modal-overlay" onClick={() => setSelectedFriend(null)}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+              <h3 className="modal-title">Remove Friend</h3>
+              <p className="modal-body">Remove <strong>@{selectedFriend}</strong> as a friend? You won't be able to message each other anymore.</p>
+              <div className="modal-actions">
+                <button className="settings-edit-btn" onClick={() => setSelectedFriend(null)}>Cancel</button>
+                <button className="settings-danger-btn" onClick={handleRemoveFriend} disabled={removingFriend}>
+                  {removingFriend ? 'Removing...' : 'Remove'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* SETTINGS TAB */}
