@@ -7,6 +7,7 @@ import { useReviews, type Review } from '../hooks/useReviews'
 import { useWatchlist } from '../hooks/useWatchlist'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
+import { useUnread } from '../hooks/useUnread'
 import '../styles/MovieDetail.css'
 
 const REVIEW_LIMIT = 100
@@ -158,6 +159,7 @@ function ReviewModal({
 // ── MAIN PAGE ──
 export default function MovieDetail() {
   const { user, signOut } = useAuth()
+  const { total: unreadCount } = useUnread(localStorage.getItem('theatrica_token'))
   const { imdbID } = useParams<{ imdbID: string }>()
   const navigate = useNavigate()
   const { movie, loading, error } = useMovieDetail(imdbID ?? '')
@@ -198,6 +200,13 @@ export default function MovieDetail() {
                   <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg>
                 My Profile
+              </button>
+              <button onClick={() => { setMenuOpen(false); navigate('/inbox') }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                Messages
+                {unreadCount > 0 && <span className="nav-badge">{unreadCount}</span>}
               </button>
               <button onClick={() => { setMenuOpen(false); navigate('/requests') }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

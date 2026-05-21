@@ -4,6 +4,7 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
+import { useUnread } from '../hooks/useUnread'
 import '../styles/Profile.css'
 
 const API = `${import.meta.env.VITE_API_BASE_URL}/api/v1/reviews`
@@ -31,6 +32,7 @@ function StarRating({ rating }: { rating: number }) {
 function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (v: boolean) => void }) {
   const navigate = useNavigate()
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { total: unreadCount } = useUnread(localStorage.getItem('theatrica_token'))
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -61,6 +63,13 @@ function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOpen: (v:
                 <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
               My Profile
+            </button>
+            <button onClick={() => { setMenuOpen(false); navigate('/inbox') }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              Messages
+              {unreadCount > 0 && <span className="nav-badge">{unreadCount}</span>}
             </button>
             <button onClick={() => { setMenuOpen(false); navigate('/requests') }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -102,7 +111,9 @@ export default function Profile() {
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
-  const [activeTab, setActiveTab] = useState<'reviews' | 'settings'>('reviews')
+  const [activeTab, setActiveTab] = useState<'reviews' | 'friends' | 'settings'>('reviews')
+  const [friends, setFriends] = useState<{ username: string; profilePic: string | null }[]>([])
+  const [friendsLoading, setFriendsLoading] = useState(false)
   const [editingUsername, setEditingUsername] = useState(false)
   const [newUsername, setNewUsername] = useState('')
   const [usernameError, setUsernameError] = useState<string | null>(null)
@@ -148,6 +159,18 @@ export default function Profile() {
     }
     fetchUserReviews()
   }, [user?.username])
+
+  useEffect(() => {
+    if (activeTab !== 'friends' || !token) return
+    setFriendsLoading(true)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/connections/friends`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(data => setFriends(Array.isArray(data) ? data : []))
+      .catch(() => setFriends([]))
+      .finally(() => setFriendsLoading(false))
+  }, [activeTab, token])
 
   async function handleUsernameEdit(e: React.FormEvent) {
     e.preventDefault()
@@ -222,6 +245,12 @@ export default function Profile() {
             My Reviews
           </button>
           <button
+            className={`profile-tab${activeTab === 'friends' ? ' active' : ''}`}
+            onClick={() => setActiveTab('friends')}
+          >
+            Friends
+          </button>
+          <button
             className={`profile-tab${activeTab === 'settings' ? ' active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
@@ -269,6 +298,46 @@ export default function Profile() {
                   </button>
                 )}
               </>
+            )}
+          </section>
+        )}
+
+        {/* FRIENDS TAB */}
+        {activeTab === 'friends' && (
+          <section className="profile-section" data-aos="fade-up">
+            {friendsLoading && <div className="home-status">Loading friends...</div>}
+            {!friendsLoading && friends.length === 0 && (
+              <div className="profile-empty">
+                <span className="profile-empty-icon">👥</span>
+                <p>No friends yet. Connect with your matches!</p>
+                <button className="md-btn-primary" style={{ marginTop: '1rem' }} onClick={() => navigate('/matches')}>
+                  Find Matches
+                </button>
+              </div>
+            )}
+            {!friendsLoading && friends.length > 0 && (
+              <div className="friends-list">
+                {friends.map((f, i) => (
+                  <div
+                    key={f.username}
+                    className="friend-item"
+                    onClick={() => navigate(`/chat/${f.username}`)}
+                    data-aos="fade-up"
+                    data-aos-delay={`${i * 40}`}
+                  >
+                    <div className="friend-avatar">
+                      {f.profilePic
+                        ? <img src={f.profilePic} alt={f.username} />
+                        : f.username.charAt(0).toUpperCase()
+                      }
+                    </div>
+                    <span className="friend-username">@{f.username}</span>
+                    <svg className="friend-chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                ))}
+              </div>
             )}
           </section>
         )}

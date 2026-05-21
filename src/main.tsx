@@ -13,6 +13,7 @@ import Matches from './pages/Matches.tsx'
 import UserProfile from './pages/UserProfile.tsx'
 import FriendRequests from './pages/FriendRequests.tsx'
 import Chat from './pages/Chat.tsx'
+import Inbox from './pages/Inbox.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -31,6 +32,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/user/:username" element={<UserProfile />} />
           <Route path="/requests" element={<FriendRequests />} />
           <Route path="/chat/:username" element={<Chat />} />
+          <Route path="/inbox" element={<Inbox />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

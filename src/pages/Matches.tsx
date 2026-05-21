@@ -4,6 +4,7 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
+import { useUnread } from '../hooks/useUnread'
 import '../styles/Matches.css'
 
 const API = `${import.meta.env.VITE_API_BASE_URL}/api/v1/reviews`
@@ -67,6 +68,7 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
 export default function Matches() {
   const navigate = useNavigate()
   const { user, signOut } = useAuth()
+  const { total: unreadCount } = useUnread(localStorage.getItem('theatrica_token'))
   const [matches, setMatches] = useState<Match[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

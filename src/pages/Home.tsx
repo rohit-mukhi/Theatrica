@@ -5,6 +5,7 @@ import 'aos/dist/aos.css'
 import { useMovies } from '../hooks/useMovies'
 import { useSearch } from '../hooks/useSearch'
 import { useWatchlist } from '../hooks/useWatchlist'
+import { useUnread } from '../hooks/useUnread'
 import Footer from '../components/Footer'
 import { useAuth } from '../context/AuthContext'
 import '../styles/Home.css'
@@ -103,6 +104,7 @@ export default function Home() {
   const { user, signOut } = useAuth()
   const { movies, loading, error } = useMovies()
   const { isInWatchlist, toggle: toggleWatchlist } = useWatchlist(user?.username ?? null)
+  const { total: unreadCount } = useUnread(localStorage.getItem('theatrica_token'))
   const { results, loading: searching, error: searchError, query, search, clear } = useSearch()
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -180,6 +182,13 @@ export default function Home() {
                   <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                 </svg>
                 My Profile
+              </button>
+              <button onClick={() => { setMenuOpen(false); navigate('/inbox') }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                Messages
+                {unreadCount > 0 && <span className="nav-badge">{unreadCount}</span>}
               </button>
               <button onClick={() => { setMenuOpen(false); navigate('/requests') }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
