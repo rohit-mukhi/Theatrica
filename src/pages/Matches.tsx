@@ -68,7 +68,7 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
 export default function Matches() {
   const navigate = useNavigate()
   const { user, signOut } = useAuth()
-  const { total: unreadCount } = useUnread(localStorage.getItem('theatrica_token'))
+  useUnread(localStorage.getItem('theatrica_token'))
   const [matches, setMatches] = useState<Match[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
